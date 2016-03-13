@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Slnky::Service::Route53 do
-  subject { described_class.new("http://localhost:3000") }
+  subject { described_class.new("http://localhost:3000", test_config) }
   let(:terminated_event) { event_load('terminated')}
   let(:fake_event) { event_load('fake')}
 

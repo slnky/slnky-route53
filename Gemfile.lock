@@ -1,7 +1,5 @@
-GIT
-  remote: git://github.com/shawncatz/slnky-route53.git
-  revision: 09745677112230a683d137edf3d338bcea42117b
-  branch: master
+PATH
+  remote: ~/slnky/slnky-cli
   specs:
     slnky (0.4.0)
       activesupport (~> 4.2.5.1)

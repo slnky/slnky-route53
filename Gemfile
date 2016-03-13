@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # gem 'slnky', '~> 0.3.5'
-gem 'slnky', github: 'shawncatz/slnky-route53', branch: 'master'
+gem 'slnky', path: '~/slnky/slnky-cli'
 gem 'daemons', '~> 1.2.3'
 gem 'dotenv', '~> 2.1.0'
 

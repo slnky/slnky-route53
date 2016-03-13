@@ -9,3 +9,4 @@
 /log/*
 /.env
 /deploy.env
+/test/config.yaml
