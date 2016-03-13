@@ -12,3 +12,4 @@ gem 'airbrussh', '~> 0.8.0'
 gem 'aws-sdk'
 
 gem 'rspec'
+gem 'rake'
