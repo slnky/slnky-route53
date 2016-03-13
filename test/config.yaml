@@ -1,0 +1,10 @@
+---
+environment: development # should specify this
+rabbit:
+  host: localhost
+  port: 5672
+aws:
+  key: <%= ENV['AWS_ACCESS_KEY_ID'] %>
+  secret: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+  zones: <%= ENV['AWS_HOSTED_ZONES'] %>
+  region: <%= ENV['AWS_REGION'] %>
