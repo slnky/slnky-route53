@@ -1,0 +1,21 @@
+{
+  "name": "aws.ec2.terminated",
+  "payload": {
+    "version": "0",
+    "id": "1a108d8e-1053-4906-ad13-ea37944e8f37",
+    "detail-type": "EC2 Instance State-change Notification",
+    "source": "aws.ec2",
+    "account": "199947497176",
+    "time": "2016-03-10T15:33:07Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:ec2:us-east-1:199947497176:instance/i-23669fb8"
+    ],
+    "detail": {
+      "instance-id": "i-12345678",
+      "state": "terminated"
+    },
+    "controller": "hooks/aws",
+    "action": "create"
+  }
+}

@@ -15,4 +15,4 @@ env = ARGV[1]
 # Become a daemon
 Daemons.daemonize if env == 'production'
 
-Slnky::Service::Route53.new(ENV['SLNKY_URL'], env).start
+Slnky::Service::Route53.new(ENV['SLNKY_URL'], env: env).start
