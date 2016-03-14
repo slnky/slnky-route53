@@ -12,7 +12,7 @@ module Slnky
         @ec2 = Aws::EC2::Resource.new
       end
 
-      subscribe 'aws.terminated', :handle_terminated
+      subscribe 'aws.ec2.terminated', :handle_terminated
 
       def handle_terminated(name, data)
         id = data.detail['instance-id']
