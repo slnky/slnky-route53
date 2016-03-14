@@ -1,5 +1,6 @@
 ---
 environment: development # should specify this
+service: chef
 rabbit:
   host: localhost
   port: 5672
