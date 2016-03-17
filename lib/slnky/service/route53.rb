@@ -20,12 +20,12 @@ module Slnky
       end
 
       def remove_records(id)
-        log :warn, "removing records for #{id}"
+        log :info, "removing records for #{id}"
 
         begin
           instance = @ec2.instances(instance_ids: [id]).first
         rescue => e
-          log :error, "instance not found: #{e.message}"
+          log :info, "instance not found: #{e.message}"
           instance = nil
         end
 
@@ -36,7 +36,7 @@ module Slnky
           zones.each do |zone|
             records = get_records(zone.id, ip)
             records.each do |record|
-              remove_record(zone.id, record)
+              remove_record(id, zone.id, record)
             end
           end
         end
@@ -62,8 +62,8 @@ module Slnky
         out
       end
 
-      def remove_record(zoneid, record)
-        log :warn, "removing record: #{record.name}"
+      def remove_record(id, zoneid, record)
+        log :warn, "termintated #{id}: removing record: #{record.name}"
         if development?
           log :info, "not removing, in development environment"
           return
