@@ -1,6 +1,6 @@
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
-RSpec::Core::RakeTask.new(:remote) do |t|
+RSpec::Core::RakeTask.new('spec:remote') do |t|
   t.rspec_opts = '--tag remote'
 end
 task :default => :spec
