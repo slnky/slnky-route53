@@ -1,9 +1,10 @@
 ---
-environment: development # should specify this
-service: chef
-rabbit:
-  host: localhost
-  port: 5672
+# config.yaml for Slnky::Route53::Service
+# this file is processed through ERB, you can inject
+# values into the config from the environment, by specifying them
+# in the .env file
+environment: test # should specify this
+service: route53 # just an example
 aws:
   key: <%= ENV['AWS_ACCESS_KEY_ID'] %>
   secret: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
