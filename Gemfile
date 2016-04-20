@@ -12,4 +12,4 @@ gem 'travis', '~> 1.8.2'
 
 gem 'rspec'
 gem 'rake'
-gem 'aws-sdk'
+gem 'fog-aws'

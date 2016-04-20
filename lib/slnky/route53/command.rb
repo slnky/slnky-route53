@@ -25,6 +25,21 @@ module Slnky
           log.info args.join(" ")
         end
       end
+
+      command :name, 'get name for given ID', <<-USAGE.strip_heredoc
+        Usage: name [options] ID
+
+        -h --help           print help.
+      USAGE
+      def handle_name(request, response, opts)
+        id = opts.id
+        list = client.get_name(id)
+        if list
+          log.info "instance #{id} name is: #{list}"
+        else
+          log.info "no names found for instance #{id}"
+        end
+      end
     end
   end
 end

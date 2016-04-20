@@ -1,91 +1,70 @@
-require 'aws-sdk'
+require 'fog/aws'
 
 module Slnky
   module Route53
     class Client < Slnky::Client::Base
       def initialize
         @myzones = config.aws.zones.split(',').map { |e| "#{e}." }
-        Aws.config.update({region: config.aws.region, credentials: Aws::Credentials.new(config.aws.key, config.aws.secret)})
-        @dns = Aws::Route53::Client.new
-        @ec2 = Aws::EC2::Resource.new
+        options = {provider: 'AWS', aws_secret_access_key: config.aws.secret, aws_access_key_id: config.aws.key}
+        @dns = Fog::DNS.new(options)
+        @ec2 = Fog::Compute.new(options.merge({region: config.aws.region}))
       end
 
       def remove_records(id)
-        log.info "removing records for #{id}"
-
         ip = get_ip(id)
-        unless ip
-          log.info "could not get records for #{id} #{ip}"
-          return
+        records = get_records(ip)
+        records.each do |record|
+          log.warn "instance #{id} terminated, removing record: #{record.name}"
+          record.destroy if config.production?
         end
+      end
 
-        ip = instance.private_ip_address
-        log.info "found instance #{id}: #{ip}"
-        zones = get_zones
-        zones.each do |zone|
-          records = get_records(zone.id, ip)
-          records.each do |record|
-            remove_record(id, zone.id, record)
-          end
-        end
-
-        true
+      def get_name(id)
+        ip = get_ip(id)
+        records = get_records(ip)
+        return nil unless records.count > 0
+        records.map {|e| e.name}.join(", ")
       end
 
       def get_ip(id)
-        instance = @ec2.instances(instance_ids: [id]).first
+        instance = @ec2.servers.get(id)
         instance.private_ip_address
       rescue => e
-        log.error "could not get ip for #{id}: #{e.message}"
-        nil
+        raise "unknown instance #{id}"
       end
 
       def get_zones
-        @dns.list_hosted_zones.hosted_zones.select { |z| @myzones.include?(z.name) }
-      end
-
-      def get_records(zoneid, ip)
-        puts "get_records: #{zoneid} #{ip}"
+        zones = @dns.zones.all
         out = []
-        response = @dns.list_resource_record_sets(hosted_zone_id: zoneid)
-        puts "response: #{response.next_record_name}"
-        records = response.resource_record_sets
-        puts "count: #{records.count}"
-        records.each do |record|
-          next unless record.type == 'A'
-          record.resource_records.each do |r|
-            if r.value == ip
-              out << record
-            end
-          end
+        zones.each do |zone|
+          out << zone if @myzones.include?(zone.domain)
         end
         out
       end
 
-      def get_zone_records(zoneid, start="")
-        @dns.list_resource_record_sets(hosted_zone_id: zoneid, start_record_type:'A') do |page|
-          puts page.inspect
+      def get_records(ip)
+        out = []
+        get_all_records.each do |record|
+          out << record if record.value.include?(ip)
         end
+        out
       end
 
-      def remove_record(id, zoneid, record)
-        log.warn "termintated #{id}: removing record: #{record.name}"
-        if config.development?
-          log.info "not removing, in development environment"
-          return
+      def get_all_records
+        out = []
+        get_zones.each do |zone|
+          out += get_zone_records(zone.id)
         end
-        @dns.change_resource_record_sets({
-                                             hosted_zone_id: zoneid,
-                                             change_batch: {
-                                                 comment: "remove record #{record.name}",
-                                                 changes: [
-                                                     {
-                                                         action: 'DELETE',
-                                                         resource_record_set: record
-                                                     }
-                                                 ]
-                                             }
-                                         })
+        out
+      end
+
+      def get_zone_records(zoneid)
+        out = []
+        zone = @dns.zones.get(zoneid)
+        zone.records.all!.each do |record|
+          out << record if record.type == 'A'
+        end
+        out
       end
     end
   end
