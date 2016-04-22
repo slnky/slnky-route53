@@ -21,6 +21,7 @@ module Slnky
 
       def get_name(id)
         ip = get_ip(id)
+        return nil unless ip
         records = get_records(ip)
         return nil unless records.count > 0
         records.map {|e| e.name}.join(", ")
@@ -30,7 +31,7 @@ module Slnky
         instance = @ec2.servers.get(id)
         instance.private_ip_address
       rescue => e
-        raise "unknown instance #{id}"
+        nil
       end
 
       def get_zones
