@@ -24,7 +24,7 @@ module Slnky
         return nil unless ip
         records = get_records(ip)
         return nil unless records.count > 0
-        records.map {|e| e.name}.join(", ")
+        records.map {|e| e.name}
       end
 
       def get_ip(id)

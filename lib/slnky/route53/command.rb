@@ -26,16 +26,16 @@ module Slnky
       #   end
       # end
 
-      command :name, 'get name for given ID', <<-USAGE.strip_heredoc
-        Usage: name [options] ID
+      command :lookup, 'get name for given ID', <<-USAGE.strip_heredoc
+        Usage: lookup [options] ID
 
         -h --help           print help.
       USAGE
-      def handle_name(request, response, opts)
+      def handle_lookup(request, response, opts)
         id = opts.id
         list = client.get_name(id)
         if list
-          log.info "instance #{id} name is: #{list}"
+          log.info "instance #{id} name is: #{list.join(', ')}"
         else
           log.info "no names found for instance #{id}"
         end
